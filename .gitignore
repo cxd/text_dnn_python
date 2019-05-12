@@ -1,0 +1,7 @@
+.idea/**
+.idea
+*.iml
+lib/__pycache__/**
+__pycache__/**
+data/glove/**
+data/news20/**
