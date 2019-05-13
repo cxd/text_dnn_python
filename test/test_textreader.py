@@ -16,4 +16,14 @@ targets = reader.one_hot_encode_classes(all_classes)
 embed_reader = GloveReader.GloveReader(base_dir=os.path.join('..', 'data'))
 glove1 = embed_reader.read_glove_model('model50')
 
-all_tensors, tf_dataset = reader.make_embedding_matrices(embed_reader, all_words)
+all_tensors = reader.make_embedding_matrices(embed_reader, all_words)
+
+# write embeddings to file for later use.
+# https://docs.python.org/3/library/pickle.html
+targetpath = os.path.join('..', 'data')
+targetpath = os.path.join(targetpath, 'news20')
+targetpath = os.path.join(targetpath, 'news_20_train_embeddings.pickle')
+import pickle
+with open(targetpath, 'wb') as fout:
+    pickle.dump(all_tensors, fout, pickle.HIGHEST_PROTOCOL)
+

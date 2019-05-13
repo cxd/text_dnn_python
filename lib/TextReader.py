@@ -126,5 +126,5 @@ class TextReader:
             pad_size = max_len - len(word_seq)
             embed_frame = embedding_reader.get_word_matrix(word_seq, pad_size=pad_size, pad_word='<NA>')
             all_tensors.append(embed_frame)
-        return all_tensors, tf.data.Dataset.from_tensor_slices(all_tensors)
+        return all_tensors
 
