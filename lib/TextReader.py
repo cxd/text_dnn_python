@@ -30,7 +30,7 @@ class TextReader:
         path = os.path.join(self.base_dir, file)
         filter_pattern = re.compile(punc_filter)
         split_pattern = re.compile(text_delim)
-        vocab = ['<NA>', '<start>', '<end>']
+        vocab = ['<NA>', '<UNKNOWN>', '<start>', '<end>']
         all_labels = []
         all_words = []
         with open(path, 'r', encoding=file_encoding) as fin:
@@ -70,8 +70,12 @@ class TextReader:
             if self.index_cache.__contains__(word) is True:
                 return self.index_cache[word]
             else:
-                self.index_cache[word] = vocab.index(word)
-                return self.index_cache[word]
+                if vocab.__contains__(word):
+                    self.index_cache[word] = vocab.index(word)
+                    return self.index_cache[word]
+                else:
+                    self.index_cache['<UNKNOWN>'] = vocab.index('<UNKNOWN>')
+                    return self.index_cache['<UNKNOWN>']
 
         return [get_index(vocab, word) for word in words]
 
@@ -113,18 +117,10 @@ class TextReader:
             row[target_idx] = word_seq[source_idx]
         return row
 
-    def make_embedding_matrices(self, embedding_reader, all_words):
-        # Generate a matrix of max dimension size for reach sentence in the word sequence.
-        # Returns an array of matrices with embedding_dim x max_len per sentence in all words.
-        # The embedding_reader must implement the method get_word_matrix(row: seq of words)
-        # to return a matrix of embeddings for each sequence.
-        # generating the set of matrices is quite slow due to vocabulary size.
-        # it is recommended to save the data (using pickling) after the preprocessing step is completed.
-        max_len = self.longest_sequence(all_words)
-        all_tensors = []
-        for word_seq in all_words:
-            pad_size = max_len - len(word_seq)
-            embed_frame = embedding_reader.get_word_matrix(word_seq, pad_size=pad_size, pad_word='<NA>')
-            all_tensors.append(embed_frame)
-        return all_tensors
 
+    def vocab_to_embedding_matrix(self, embedding_reader, vocab):
+        # Use the preloaded embedding to generate an embedding matrix
+        # this is defined on the vocab which we use to obtain indexes
+        # in our padded sequences.
+        embed_frame = embedding_reader.get_word_matrix(vocab, pad_size=0)
+        return embed_frame
