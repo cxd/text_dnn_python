@@ -88,4 +88,5 @@ if test_width > max_sequence_length:
     test_sequence = test_sequences.iloc[:, delta:]
 test_sequence.shape
 
+loss, accuracy = model.evaluate(test_sequence, test_targets)
 
