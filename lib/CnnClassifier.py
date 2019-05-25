@@ -8,7 +8,7 @@ class CnnClassifier:
         None
 
 
-    def build_network(self, vocab_size, max_sequence_length, num_outputs, pool_size, kernel_shape, embed_dim=50, num_channels=1, num_filters=1, use_bias=1, embedding_matrix=None, train_embedding=False, dropout=0.3):
+    def build_network(self, vocab_size, max_sequence_length, num_outputs, kernel_shape, pool_size=2, embed_dim=50, num_channels=1, num_filters=1, use_bias=1, embedding_matrix=None, train_embedding=False, dropout=0.3):
         # Input shape. 3D tensor with shape: (batch, steps, channels)
         # Output shape is softmax num_outputs (number of class labels)
         model = keras.Sequential()
@@ -25,7 +25,8 @@ class CnnClassifier:
                                       data_format="channels_last",
                                       kernel_initializer=keras.initializers.he_normal(seed=None)))
         model.add(keras.layers.Dropout(dropout))
-        
+        model.add(keras.layers.MaxPool1D(pool_size=pool_size, strides=None, padding='valid', data_format='channels_last'))
+
         model.add(keras.layers.Conv1D(num_filters,
                                       kernel_size=kernel_shape,
                                       padding='valid',
@@ -34,7 +35,8 @@ class CnnClassifier:
                                       data_format="channels_last",
                                       kernel_initializer=keras.initializers.he_normal(seed=None)))
         model.add(keras.layers.Dropout(dropout))
-        
+        model.add(keras.layers.MaxPool1D(pool_size=pool_size, strides=None, padding='valid', data_format='channels_last'))
+
         model.add(keras.layers.Conv1D(num_filters,
                                       kernel_size=kernel_shape,
                                       padding='valid',

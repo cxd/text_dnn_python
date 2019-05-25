@@ -42,7 +42,7 @@ classifier = CnnClassifier.CnnClassifier()
 max_sequence_length = sequences.shape[1]
 embed_dim = vocab_embedding.shape[1]
 num_outputs = targets.shape[1]
-pool_size = targets.shape[1]
+pool_size = 2
 kernel_shape = 4
 
 model = classifier.build_network(len(vocab), max_sequence_length, num_outputs, pool_size, kernel_shape, embed_dim, embedding_matrix=vocab_embedding)
