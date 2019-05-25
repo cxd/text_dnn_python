@@ -14,7 +14,6 @@ class CnnClassifier:
         model = keras.Sequential()
         # an embedding layer of vocab_size x embed_dim x max_sequence_length
         model.add(keras.layers.Embedding(vocab_size, embed_dim, input_length=max_sequence_length))
-        print((max_sequence_length, embed_dim, num_channels))
 
         model.add(keras.layers.Conv1D(num_filters,
                                       input_shape=(max_sequence_length, embed_dim, num_channels),
@@ -25,7 +24,7 @@ class CnnClassifier:
                                       data_format="channels_last",
                                       kernel_initializer=keras.initializers.he_normal(seed=None)))
         model.add(keras.layers.Dropout(dropout))
-        model.add(keras.layers.MaxPool1D(pool_size=pool_size, strides=None, padding='valid', data_format='channels_last'))
+        model.add(keras.layers.MaxPool1D(pool_size=pool_size, strides=None, padding=cnn_padding, data_format='channels_last'))
 
         model.add(keras.layers.Conv1D(num_filters,
                                       kernel_size=kernel_shape,
@@ -35,7 +34,7 @@ class CnnClassifier:
                                       data_format="channels_last",
                                       kernel_initializer=keras.initializers.he_normal(seed=None)))
         model.add(keras.layers.Dropout(dropout))
-        model.add(keras.layers.MaxPool1D(pool_size=pool_size, strides=None, padding='valid', data_format='channels_last'))
+        model.add(keras.layers.MaxPool1D(pool_size=pool_size, strides=None, padding=cnn_padding, data_format='channels_last'))
 
         model.add(keras.layers.Conv1D(num_filters,
                                       kernel_size=kernel_shape,
@@ -45,10 +44,10 @@ class CnnClassifier:
                                       data_format="channels_last",
                                       kernel_initializer=keras.initializers.he_normal(seed=None)))
         model.add(keras.layers.Dropout(dropout))
-        
-        model.add(keras.layers.MaxPool1D(pool_size=pool_size, strides=None, padding='valid', data_format='channels_last'))
+
+        model.add(keras.layers.MaxPool1D(pool_size=pool_size, strides=None, padding=cnn_padding, data_format='channels_last'))
         model.add(keras.layers.Flatten())
-        
+
         model.add(keras.layers.Dense(num_outputs,
                                      activation='softmax',
                                      kernel_initializer=keras.initializers.he_normal(seed=None)))
