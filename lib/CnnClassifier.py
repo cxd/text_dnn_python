@@ -8,7 +8,7 @@ class CnnClassifier:
         None
 
 
-    def build_network(self, vocab_size, max_sequence_length, num_outputs, kernel_shape, pool_size=2, embed_dim=50, num_channels=1, num_filters=1, use_bias=1, embedding_matrix=None, train_embedding=False, dropout=0.3):
+    def build_network(self, vocab_size, max_sequence_length, num_outputs, kernel_shape, pool_size=2, embed_dim=50, num_channels=1, num_filters=1, use_bias=1, embedding_matrix=None, train_embedding=False, cnn_padding='valid', dropout=0.3):
         # Input shape. 3D tensor with shape: (batch, steps, channels)
         # Output shape is softmax num_outputs (number of class labels)
         model = keras.Sequential()
@@ -19,7 +19,7 @@ class CnnClassifier:
         model.add(keras.layers.Conv1D(num_filters,
                                       input_shape=(max_sequence_length, embed_dim, num_channels),
                                       kernel_size=kernel_shape,
-                                      padding='valid',
+                                      padding=cnn_padding,
                                       activation='relu',
                                       use_bias=use_bias,
                                       data_format="channels_last",
@@ -29,7 +29,7 @@ class CnnClassifier:
 
         model.add(keras.layers.Conv1D(num_filters,
                                       kernel_size=kernel_shape,
-                                      padding='valid',
+                                      padding=cnn_padding,
                                       activation='relu',
                                       use_bias=use_bias,
                                       data_format="channels_last",
@@ -39,7 +39,7 @@ class CnnClassifier:
 
         model.add(keras.layers.Conv1D(num_filters,
                                       kernel_size=kernel_shape,
-                                      padding='valid',
+                                      padding=cnn_padding,
                                       activation='relu',
                                       use_bias=use_bias,
                                       data_format="channels_last",
