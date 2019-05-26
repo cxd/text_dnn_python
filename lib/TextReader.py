@@ -16,7 +16,7 @@ class TextReader:
 
 
 
-    def read_labeled_documents(self, file, class_indices=[0], text_delim='[,\s]', punc_filter='[\\!\\\'\\"#\\$%\\&\\(\\)\\*\\+,-\\./:;<=>\\?@\\[\\]^_`{|}~\t\n]', lower_case=True, file_encoding='utf-8'):
+    def read_labeled_documents(self, file, class_indices=[0], text_delim='[,\s]', punc_filter='[\\!\\\'\\"#\\$%\\&\\(\\)\\*\\+,-\\./:;<=>\\?@\\[\\]^_`{|}~\t\n]', lower_case=True, file_encoding='utf-8', header=False, remove_stopwords=True):
         # file - Read a set of labelled documents from a flat file.
         # text_delim - The text delimiter supplied is a regular expression.
         # punc_filters - The punctuation filter is used to remove unwanted punctuation as a regex.
@@ -33,8 +33,12 @@ class TextReader:
         vocab = ['<NA>', '<UNKNOWN>', '<start>', '<end>']
         all_labels = []
         all_words = []
+        skipped = False
         with open(path, 'r', encoding=file_encoding) as fin:
             for line in fin:
+                if header is True and skipped is False:
+                    skipped = True
+                    continue
                 words = re.split(split_pattern, line)
                 idx = [i for i in range(0, len(words))]
                 pairs = [pair for pair in zip(idx, words)]
@@ -43,7 +47,8 @@ class TextReader:
                 words = [re.sub(filter_pattern, '', word[1]).lower() for word in words]
                 words.insert(0, '<start>')
                 words.insert(len(words), '<end>')
-                words = [word for word in filter(lambda word: not stopwords.__contains__(word), words)]
+                if remove_stopwords is True:
+                    words = [word for word in filter(lambda word: not stopwords.__contains__(word), words)]
                 all_labels.append(class_label)
                 all_words.append(words)
                 for word in words:
